@@ -18,24 +18,31 @@ import java.util.concurrent.ExecutionException;
 @Service
 public class AuthService {
 
+    // AuthService.java
     public AuthResponseDTO register(AuthRequestDTO requestDTO) {
         try {
+            // Cria usuário no Firebase Auth
             UserRecord.CreateRequest request = new UserRecord.CreateRequest()
                     .setEmail(requestDTO.email())
                     .setPassword(requestDTO.password());
 
             UserRecord userRecord = FirebaseAuth.getInstance().createUser(request);
 
-            // Cria usuário no Firestore
+            // Salva dados no Firestore
             Firestore db = FirestoreClient.getFirestore();
             Map<String, Object> userData = new HashMap<>();
             userData.put("email", userRecord.getEmail());
             db.collection("users").document(userRecord.getUid()).set(userData).get();
 
+            // Cria Custom Token
+            String customToken = FirebaseAuth.getInstance().createCustomToken(userRecord.getUid());
+
+            // Retorna info do usuário sem custom token
             return new AuthResponseDTO(
                     userRecord.getUid(),
                     userRecord.getEmail(),
-                    "Usuário criado com sucesso"
+                    "Usuário criado com sucesso",
+                    customToken
             );
         } catch (FirebaseAuthException e) {
             if (e.getMessage().contains("EMAIL_EXISTS")) {
@@ -49,10 +56,11 @@ public class AuthService {
 
     public AuthResponseDTO login(String idToken) {
         try {
+            // Verifica token enviado pelo frontend (idToken gerado pelo signInWithEmailAndPassword)
             FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
             String uid = decodedToken.getUid();
 
-            return new AuthResponseDTO(uid, null, "Login válido");
+            return new AuthResponseDTO(uid, null, "Login válido", null);
         } catch (FirebaseAuthException e) {
             throw new RuntimeException("Token inválido", e);
         }

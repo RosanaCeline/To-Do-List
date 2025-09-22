@@ -26,7 +26,7 @@ public class AuthController implements AuthControllerDocs {
     public ResponseEntity<AuthResponseDTO> login(@RequestHeader("Authorization") String authHeader) {
         // Espera header no formato "Bearer <idToken>"
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return ResponseEntity.status(400).body(new AuthResponseDTO(null, null, "Token ausente"));
+            return ResponseEntity.status(400).body(new AuthResponseDTO(null, null, "Token ausente", null));
         }
 
         String idToken = authHeader.replace("Bearer ", "");
