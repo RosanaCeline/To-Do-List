@@ -20,6 +20,7 @@ export default function Login() {
     setEmailError('');
     setPasswordError('');
 
+    // Validações de email e senha
     if (!email) {
       setEmailError('E-mail obrigatório');
       return;
@@ -52,7 +53,7 @@ export default function Login() {
         Acesse sua lista de tarefas e organize seu dia a dia!
       </p>
 
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }} noValidate>
         <Input
           type="email"
           placeholder="Digite seu email"
