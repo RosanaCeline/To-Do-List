@@ -29,25 +29,21 @@ export async function register(email, password) {
 }
 
 export async function login(email, password) {
-  try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
-    const idToken = await user.getIdToken();
+  const userCredential = await signInWithEmailAndPassword(auth, email, password);
+  const user = userCredential.user;
+  const idToken = await user.getIdToken();
+  localStorage.setItem("idToken", idToken);
 
-    localStorage.setItem("idToken", idToken);
+  const response = await fetch(`${API_URL}/login`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${idToken}` },
+  });
 
-    const response = await fetch(`${API_URL}/login`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${idToken}` },
-    });
+  const data = await response.json();
 
-    if (!response.ok) {
-      const text = await response.text();
-      throw new Error(text);
-    }
-
-    return await response.json();
-  } catch (error) {
-    throw error;
+  if (!response.ok) {
+    throw data;
   }
+
+  return data;
 }

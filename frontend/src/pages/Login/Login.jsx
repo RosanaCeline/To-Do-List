@@ -39,8 +39,9 @@ export default function Login() {
   } catch (err) {
     console.error(err);
 
-    // Erros do Firebase
-    if (err.code && err.code.startsWith("auth/")) {
+    if (err.error) {
+      toast.error(err.error); // mostra mensagem do backend
+    } else if (err.code && err.code.startsWith("auth/")) {
       switch (err.code) {
         case "auth/user-not-found":
           toast.error("Usuário não encontrado");
@@ -48,19 +49,14 @@ export default function Login() {
         case "auth/wrong-password":
           toast.error("Senha incorreta");
           break;
-        case "auth/invalid-email":
-          toast.error("Email inválido");
-          break;
         default:
-          // Para qualquer outro erro do auth, mostra uma mensagem genérica
           toast.error("E-mail ou senha incorretos");
       }
     } else {
-      // Erros do backend ou desconhecidos
       toast.error(err.message || "Erro desconhecido");
     }
   }
-};
+}
 
   return (
     <AuthLayout imageUrl={authImage} title="Login - Lista de Tarefas" reverse>
