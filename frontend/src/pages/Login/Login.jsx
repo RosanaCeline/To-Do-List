@@ -8,11 +8,11 @@ import { login } from "../../services/authService";
 import authImage from '../../assets/login-image.svg';
 
 export default function Login() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,31 +20,47 @@ export default function Login() {
     setEmailError('');
     setPasswordError('');
 
-    // Validações de email e senha
-    if (!email) {
-      setEmailError('E-mail obrigatório');
-      return;
-    }
-    if (!password) {
-      setPasswordError('Senha obrigatória');
+    // Validações locais
+    const errors = {};
+    if (!email) errors.email = "E-mail obrigatório";
+    else if (!email.includes("@")) errors.email = "E-mail inválido";
+
+    if (!password) errors.password = "Senha obrigatória";
+
+    if (Object.keys(errors).length > 0) {
+      setEmailError(errors.email || '');
+      setPasswordError(errors.password || '');
       return;
     }
 
-    try {
-      const data = await login(email, password);
-      
-      navigate('/tasks');
-    } catch (err) {
-      console.error(err);
-      if (err.message.includes("Token inválido")) {
-        toast.error("Token inválido, tente novamente");
-      } else if (err.message.includes("Firebase")) {
-        toast.error("E-mail ou senha incorretos");
-      } else {
-        toast.error("Erro ao fazer login: " + err.message);
+  try {
+    await login(email, password);
+    navigate('/tasks');
+  } catch (err) {
+    console.error(err);
+
+    // Erros do Firebase
+    if (err.code && err.code.startsWith("auth/")) {
+      switch (err.code) {
+        case "auth/user-not-found":
+          toast.error("Usuário não encontrado");
+          break;
+        case "auth/wrong-password":
+          toast.error("Senha incorreta");
+          break;
+        case "auth/invalid-email":
+          toast.error("Email inválido");
+          break;
+        default:
+          // Para qualquer outro erro do auth, mostra uma mensagem genérica
+          toast.error("E-mail ou senha incorretos");
       }
+    } else {
+      // Erros do backend ou desconhecidos
+      toast.error(err.message || "Erro desconhecido");
     }
-  };
+  }
+};
 
   return (
     <AuthLayout imageUrl={authImage} title="Lista de Tarefas" reverse>
@@ -59,16 +75,18 @@ export default function Login() {
           placeholder="Digite seu email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          required
+          error={emailError}
           autoComplete="email"
+          required
         />
         <Input
           type="password"
           placeholder="Digite sua senha"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          required
+          error={passwordError}
           autoComplete="current-password"
+          required
         />
         <Button type="submit">Entrar</Button>
       </form>
