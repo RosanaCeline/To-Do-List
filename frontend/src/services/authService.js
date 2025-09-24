@@ -20,7 +20,7 @@ export async function register(email, password) {
 
   // Login automático com Custom Token recebido do backend
   if (data.customToken) {
-    await signInWithCustomToken(auth, data.customToken);
+    const userCredential = await signInWithCustomToken(auth, data.customToken); // capturando retorno
     const user = userCredential.user;
     const idToken = await user.getIdToken();
     localStorage.setItem("idToken", idToken);
