@@ -58,6 +58,8 @@ A aplicação possui **front-end** desenvolvido com **HTML, CSS e React.js** e *
 4. Abra o front-end no navegador ou execute com `npm start` (React.js).
 5. Comece a adicionar, editar e gerenciar suas tarefas!
 
+Ou, se preferir, acesse [clicando aqui](https://to-do-list-indol-tau.vercel.app/)
+
 ---
 
 ## Observações
