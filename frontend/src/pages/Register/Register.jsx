@@ -64,7 +64,7 @@ export default function Register() {
   };
 
   return (
-    <AuthLayout imageUrl={authImage} title="Lista de Tarefas">
+    <AuthLayout imageUrl={authImage} title="Cadastro - Lista de Tarefas">
       <h1 style={{ color: '#fff', marginBottom: '1rem' }}>Cadastre-se</h1>
       <p style={{ color: '#fff', marginBottom: '3rem' }}>
         Faça seu cadastro na plataforma e tenha acesso à lista de tarefas!

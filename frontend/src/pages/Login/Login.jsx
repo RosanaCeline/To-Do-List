@@ -63,7 +63,7 @@ export default function Login() {
 };
 
   return (
-    <AuthLayout imageUrl={authImage} title="Lista de Tarefas" reverse>
+    <AuthLayout imageUrl={authImage} title="Login - Lista de Tarefas" reverse>
       <h1 style={{ color: '#fff', marginBottom: '1rem' }}>Faça seu Login</h1>
       <p style={{ color: '#fff', marginBottom: '3rem' }}>
         Acesse sua lista de tarefas e organize seu dia a dia!

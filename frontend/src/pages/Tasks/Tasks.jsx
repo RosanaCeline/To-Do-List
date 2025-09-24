@@ -25,6 +25,10 @@ export default function Tasks() {
   const notify = (message) => toast.warning(message);
 
   useEffect(() => {
+    document.title = "Minhas Tarefas - Lista de Tarefas";
+  }, []);
+
+  useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) setUserId(user.uid);
       else setUserId(null);
@@ -58,14 +62,14 @@ export default function Tasks() {
 
   const handleCancel = () => resetForm();
 
-  // Adiciona ou edita nota
+  // Adiciona ou edita tarefa
   const handleAddOrEditNote = async (e) => {
     e.preventDefault();
     if (!userId) return;
 
     // Validações
     if (!title.trim()) return notify("O título é obrigatório!");
-    if (!content.trim()) return notify("O conteúdo da nota não pode estar vazio!");
+    if (!content.trim()) return notify("O conteúdo da tarefa não pode estar vazio!");
     if (!datetime) return notify("A data e hora são obrigatórias!");
 
     const selectedDate = new Date(datetime);
@@ -77,7 +81,7 @@ export default function Tasks() {
         note.title.trim().toLowerCase() === title.trim().toLowerCase() &&
         note.id !== editId
     );
-    if (duplicate) return notify("Já existe uma nota com esse título!");
+    if (duplicate) return notify("Já existe uma tarefa com esse título!");
 
     const payload = {
       title,
@@ -149,7 +153,7 @@ export default function Tasks() {
   return (
     <div className={styles.container}>
       <div className={styles.headerContainer}>
-        <h1 className={styles.header}>Minhas Notas</h1>
+        <h1 className={styles.header}>Minhas Tarefas</h1>
         <Button onClick={handleLogout} style={{ background: "#f44336" }}>Sair</Button>
       </div>
 
@@ -165,7 +169,7 @@ export default function Tasks() {
         )}
 
         <textarea
-          placeholder="Escreva uma nota..."
+          placeholder="Escreva uma tarefa..."
           value={content}
           onClick={() => setIsExpanded(true)}
           onChange={handleContentChange}
