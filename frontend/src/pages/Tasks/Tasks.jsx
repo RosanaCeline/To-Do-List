@@ -75,13 +75,20 @@ export default function Tasks() {
     const selectedDate = new Date(datetime);
     if (selectedDate < new Date()) return notify("A data e hora não podem ser anteriores ao momento atual!");
 
-    // Evita duplicados
-    const duplicate = notes.some(
-      (note) =>
-        note.title.trim().toLowerCase() === title.trim().toLowerCase() &&
+    const selectedDateISO = selectedDate.toISOString();
+    // Evita duplicados por título ou por data/hora
+    const duplicate = notes.some((note) => {
+      const noteDate = new Date(note.dateTime).getTime(); // timestamp do backend
+      const selectedTime = selectedDate.getTime();        // timestamp do input
+      return (
+        (note.title.trim().toLowerCase() === title.trim().toLowerCase() ||
+        noteDate === selectedTime) &&
         note.id !== editId
-    );
-    if (duplicate) return notify("Já existe uma tarefa com esse título!");
+      );
+    });
+
+    if (duplicate) return notify("Já existe uma tarefa com esse título ou data e hora!");
+
 
     const payload = {
       title,
@@ -118,12 +125,24 @@ export default function Tasks() {
   const handleEdit = (note) => {
     setTitle(note.title);
     setContent(note.description || note.content);
-    setDatetime(note.dateTime ? new Date(note.dateTime).toISOString().slice(0, 16) : "");
+
+    if (note.dateTime) {
+      const date = new Date(note.dateTime);
+      // Ajusta para o horário local no formato yyyy-MM-ddTHH:mm
+      const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+        .toISOString()
+        .slice(0, 16);
+      setDatetime(local);
+    } else {
+      setDatetime("");
+    }
+
     setCompleted(note.completed);
     setIsExpanded(true);
-    setEditId(note.id);
+
     const scrollHeight = Math.min(Math.max((note.description || note.content).length * 2, 50), 200);
     setTextareaHeight(scrollHeight);
+    setEditId(note.id);
   };
 
   const handleContentChange = (e) => {
