@@ -54,11 +54,11 @@ export default function Register() {
     } catch (err) {
       console.error(err);
 
-      if (err.message.includes("E-mail já está cadastrado")) {
+      if (err.message?.includes("E-mail já está cadastrado") || err.error?.includes("EMAIL_EXISTS")) {
         setEmailError("Este e-mail já está em uso.");
         toast.error("Este e-mail já está em uso.");
       } else {
-        toast.error("Erro ao cadastrar: " + err.message);
+        toast.error("Erro ao cadastrar: " + (err.message || JSON.stringify(err)));
       }
     }
   };

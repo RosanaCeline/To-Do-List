@@ -11,16 +11,15 @@ export async function register(email, password) {
     body: JSON.stringify({ email, password }),
   });
 
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(text);
-  }
-
   const data = await response.json();
+
+  if (!response.ok) {
+    throw data;
+  }
 
   // Login automático com Custom Token recebido do backend
   if (data.customToken) {
-    const userCredential = await signInWithCustomToken(auth, data.customToken); // capturando retorno
+    const userCredential = await signInWithCustomToken(auth, data.customToken);
     const user = userCredential.user;
     const idToken = await user.getIdToken();
     localStorage.setItem("idToken", idToken);
