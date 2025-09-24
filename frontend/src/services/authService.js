@@ -1,4 +1,4 @@
-import { signInWithEmailAndPassword, signInWithCustomToken } from "firebase/auth";
+import { signInWithEmailAndPassword, signInWithCustomToken, signOut } from "firebase/auth";
 import { auth } from "./firebase";
 
 const API_URL = "http://localhost:8080/auth";
@@ -21,6 +21,9 @@ export async function register(email, password) {
   // Login automático com Custom Token recebido do backend
   if (data.customToken) {
     await signInWithCustomToken(auth, data.customToken);
+    const user = userCredential.user;
+    const idToken = await user.getIdToken();
+    localStorage.setItem("idToken", idToken);
   }
 
   return data;
@@ -31,6 +34,8 @@ export async function login(email, password) {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
     const idToken = await user.getIdToken();
+
+    localStorage.setItem("idToken", idToken);
 
     const response = await fetch(`${API_URL}/login`, {
       method: "POST",

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from "react-toastify";
 import { register } from "../../services/authService";
 import AuthLayout from '../../components/layout/AuthLayout/AuthLayout';
@@ -8,6 +8,7 @@ import Button from '../../components/Button/Button';
 import authImage from '../../assets/register-image.svg';
 
 export default function Register() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -38,7 +39,7 @@ export default function Register() {
       errors.password = "Senha deve ter no máximo 70 caracteres";
     }
 
-    // Verificando se há erros, se tiver algum não envia o form
+    // Verificando para enviar o form se não tiver nenhum
     if (Object.keys(errors).length > 0) {
       setEmailError(errors.email || "");
       setPasswordError(errors.password || "");
@@ -48,8 +49,8 @@ export default function Register() {
     // Chamada ao backend
     try {
       const data = await register(email, password);
-      console.log("Usuário salvo no backend:", data);
       toast.success("Cadastro concluído com sucesso!");
+      navigate('/tasks');
     } catch (err) {
       console.error(err);
 
@@ -76,6 +77,7 @@ export default function Register() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           error={emailError}
+          autoComplete="email"
         />
         <InputField
           type="password"
@@ -83,6 +85,7 @@ export default function Register() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           error={passwordError}
+          autoComplete="new-password"
         />
 
         <Button type="submit">Cadastrar</Button>

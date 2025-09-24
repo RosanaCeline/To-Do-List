@@ -2,6 +2,8 @@
 import React from 'react';
 import styles from './Button.module.css';
 
+// Botão genérico utilizado nas páginas de cadastro, login e de tarefas
+
 export default function Button({ children, type = 'button', onClick, className = '', ...props }) {
   return (
     <button

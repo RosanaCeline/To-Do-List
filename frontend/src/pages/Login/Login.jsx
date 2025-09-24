@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from "react-toastify";
 import AuthLayout from '../../components/layout/AuthLayout/AuthLayout';
 import Input from '../../components/InputField/InputField';
@@ -12,6 +12,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,9 +31,8 @@ export default function Login() {
 
     try {
       const data = await login(email, password);
-      console.log("Login válido:", data);
-      toast.success("Login realizado com sucesso!");
-      // aqui você pode redirecionar para a tela principal, ex: navigate('/dashboard')
+      
+      navigate('/tasks');
     } catch (err) {
       console.error(err);
       if (err.message.includes("Token inválido")) {
@@ -59,6 +59,7 @@ export default function Login() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
+          autoComplete="email"
         />
         <Input
           type="password"
@@ -66,9 +67,10 @@ export default function Login() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
+          autoComplete="current-password"
         />
         <Button type="submit">Entrar</Button>
-    </form>
+      </form>
 
       <p style={{ color: '#fff', marginTop: '2rem' }}>
         Ainda não tem uma conta?{' '}

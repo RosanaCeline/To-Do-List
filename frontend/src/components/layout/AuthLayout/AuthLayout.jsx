@@ -1,5 +1,7 @@
 import styles from './authlayout.module.css';
 
+// Layout utilizado nas páginas de cadastro e login
+
 export default function AuthLayout({ children, imageUrl, reverse }) {
   return (
     <div className={`${styles.container} ${reverse ? styles.reverse : ''}`}>
