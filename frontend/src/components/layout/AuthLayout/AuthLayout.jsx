@@ -1,4 +1,4 @@
-import styles from './authlayout.module.css';
+import styles from './AuthLayout.module.css';
 
 // Layout utilizado nas páginas de cadastro e login
 
